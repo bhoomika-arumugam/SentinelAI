@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelAI — Real-Time SOC Operations Dashboard</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="topbar">
+    <div class="container nav-container">
+      <div class="brand">
+        <div class="brandmark">S</div>
+        <div>
+          SentinelAI
+          <small>SOC Operations Center</small>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html">Overview</a>
+        <a href="dashboard.html" class="active">SOC Dashboard</a>
+        <a href="threats.html">Threat Hunting</a>
+        <a href="incidents.html">Incidents & Replay</a>
+        <a href="network.html">Network Map</a>
+        <a href="behavior.html">User Behavior</a>
+        <a href="reports.html">Reports</a>
+        <a href="settings.html">Settings</a>
+      </nav>
+      <div class="nav-actions">
+        <div id="ws-status-pill" class="status-pill">
+          <span id="ws-status-dot" class="status-dot"></span>
+          <span id="ws-status-text">SOC ONLINE</span>
+        </div>
+        <div id="nav-user-container"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Content -->
+  <div class="container" style="padding: 24px 0 40px;">
+
+    <!-- Demo Controls Bar (Section 28 & 29) -->
+    <div class="panel" style="margin-bottom: 20px; padding: 12px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; background:rgba(86,240,228,0.04); border-color:rgba(86,240,228,0.2);">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="badge badge-medium">HACKATHON DEMO MODE</span>
+        <span style="font-size:12px; color:var(--text-secondary);">Simulate safe synthetic attacks through the live backend pipeline:</span>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn btn-sm btn-outline" onclick="triggerDemoScenario('BASELINE_NORMAL')">🟢 Baseline Normal</button>
+        <button class="btn btn-sm btn-warning" onclick="triggerDemoScenario('SUSPICIOUS_LOGIN')">⚡ Suspicious Login</button>
+        <button class="btn btn-sm btn-danger" onclick="triggerDemoScenario('BRUTE_FORCE')">🚨 Brute Force</button>
+        <button class="btn btn-sm btn-danger" onclick="triggerDemoScenario('ABNORMAL_DATA_ACCESS')">📡 Data Exfiltration</button>
+        <button class="btn btn-sm btn-primary" onclick="triggerDemoScenario('CRITICAL_THREAT')">🔥 Critical Exploit</button>
+      </div>
+    </div>
+
+    <!-- Top KPI Cards Grid (Section 18 & 23) -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Events Ingested</div>
+        <div class="stat-value" id="stat-total-events">--</div>
+        <div class="stat-meta">Continuous stream</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Threats</div>
+        <div class="stat-value" id="stat-active-threats">--</div>
+        <div class="stat-meta">Detected by Hybrid Engine</div>
+      </div>
+      <div class="stat-card critical">
+        <div class="stat-label">Critical Threats</div>
+        <div class="stat-value" id="stat-critical-threats">--</div>
+        <div class="stat-meta">Immediate triage required</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Open Incidents</div>
+        <div class="stat-value" id="stat-open-incidents">--</div>
+        <div class="stat-meta">New / Investigating</div>
+      </div>
+      <div class="stat-card health">
+        <div class="stat-label">Security Health</div>
+        <div class="stat-value" id="stat-health-score">--/100</div>
+        <div class="stat-meta">Calculated dynamically</div>
+      </div>
+    </div>
+
+    <!-- 2-Column Main SOC Analytical Section -->
+    <div class="dash-grid-main">
+      
+      <!-- Left Column: Live Threat Feed Table -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="status-dot"></span> Real-Time Threat Detection Feed
+          </div>
+          <a href="threats.html" class="btn btn-sm btn-outline">View All Threats →</a>
+        </div>
+        <div class="table-responsive">
+          <table class="soc-table">
+            <thead>
+              <tr>
+                <th>Threat ID</th>
+                <th>Severity</th>
+                <th>Detection Type</th>
+                <th>Source IP</th>
+                <th>Identity</th>
+                <th>Risk Score</th>
+                <th style="text-align:right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="live-threat-feed-tbody">
+              <tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-muted);">Awaiting real-time telemetry stream...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right Column: AI Security Analyst Assistant (Section 14) -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i>🤖</i> AI Security Analyst
+          </div>
+          <span class="badge badge-low">GROUNDED REASONING</span>
+        </div>
+        <div class="chat-container">
+          <div class="chat-messages" id="analyst-messages">
+            <div class="chat-bubble analyst">
+              👋 <strong>SentinelAI Analyst Online:</strong> I am grounded in your database facts. Ask me anything about current threats, evidence, attack paths, or recommended containment actions.
+            </div>
+          </div>
+          <div class="chat-input-row">
+            <input type="text" id="analyst-input" class="chat-input" placeholder="e.g. Why is this threat high risk?">
+            <button id="analyst-send-btn" class="btn btn-primary btn-sm">Ask</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 3-Column Secondary Analytical Section -->
+    <div class="dash-grid-secondary">
+      
+      <!-- Chart 1: Real-Time Risk Score Trend -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">📈 Threat Trend Timeline</div>
+        </div>
+        <div style="height: 200px; position:relative;">
+          <canvas id="threatTrendChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 2: Severity Distribution Donut -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">🎯 Threat Severity Distribution</div>
+        </div>
+        <div style="height: 200px; position:relative;">
+          <canvas id="severityDonutChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Perimeter Threat Radar -->
+      <div class="panel" style="text-align:center;">
+        <div class="panel-header">
+          <div class="panel-title">📡 Perimeter Threat Radar</div>
+        </div>
+        <div class="radar-container" id="radar-canvas" style="max-height: 200px;">
+          <div class="radar-circle rc-1"></div>
+          <div class="radar-circle rc-2"></div>
+          <div class="radar-circle rc-3"></div>
+          <div class="radar-circle rc-4"></div>
+          <div class="radar-crosshair-h"></div>
+          <div class="radar-crosshair-v"></div>
+          <div class="radar-sweep"></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Reusable Threat Detail & Explainable Modal -->
+  <div id="threat-detail-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div style="font-size:12px;font-weight:800;letter-spacing:0.1em;color:var(--color-cyan);text-transform:uppercase;">
+          SentinelAI Deep Threat Forensics
+        </div>
+        <button class="modal-close" onclick="closeThreatModal()">✕</button>
+      </div>
+      <div id="threat-modal-body"></div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/websocket.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/demo.js"></script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050a12">
+  <title>SentinelAI — AI-Powered Real-Time Cyber Threat Detection Platform</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="topbar">
+    <div class="container nav-container">
+      <div class="brand">
+        <div class="brandmark">S</div>
+        <div>
+          SentinelAI
+          <small>SOC Intelligence Platform</small>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="active">Overview</a>
+        <a href="dashboard.html">SOC Dashboard</a>
+        <a href="threats.html">Threat Hunting</a>
+        <a href="incidents.html">Incidents & Replay</a>
+        <a href="network.html">Network Map</a>
+        <a href="behavior.html">User Behavior</a>
+        <a href="reports.html">Reports</a>
+        <a href="settings.html">Settings</a>
+      </nav>
+      <div class="nav-actions">
+        <div id="ws-status-pill" class="status-pill">
+          <span id="ws-status-dot" class="status-dot"></span>
+          <span id="ws-status-text">SOC ONLINE</span>
+        </div>
+        <div id="nav-user-container">
+          <a href="login.html" class="btn btn-sm btn-primary">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="container" style="padding: 50px 0 30px;">
+    <div style="display:grid;grid-template-columns:1.15fr 0.85fr;gap:40px;align-items:center;margin-bottom:60px;">
+      <div>
+        <div class="status-pill" style="margin-bottom:16px;">
+          <span class="status-dot"></span> Real-Time Hybrid Threat Defense Active
+        </div>
+        <h1 style="font-size:clamp(38px,5vw,62px);font-weight:900;line-height:1.02;letter-spacing:-0.05em;margin-bottom:18px;">
+          Next-Gen AI Security Operations <span style="background:linear-gradient(90deg,#fff 20%,#56f0e4 80%);-webkit-background-clip:text;background-clip:text;color:transparent;">Platform</span>
+        </h1>
+        <p style="font-size:16px;color:var(--text-secondary);max-width:580px;line-height:1.6;margin-bottom:26px;">
+          SentinelAI continuously learns identity baselines, performs multi-variable Isolation Forest anomaly detection, estimates attack kill-chains, and empowers analysts with grounded explainable AI.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+          <a href="dashboard.html" class="btn btn-primary" style="padding:12px 24px;font-size:13px;">
+            Open Live SOC Dashboard →
+          </a>
+          <button class="btn btn-warning" onclick="triggerDemoScenario('SUSPICIOUS_LOGIN')">
+            ⚡ Simulate Suspicious Login
+          </button>
+          <button class="btn btn-danger" onclick="triggerDemoScenario('BRUTE_FORCE')">
+            ⚡ Simulate Brute Force
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Radar & Telemetry Preview -->
+      <div class="panel" style="text-align:center;">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="status-dot"></span> Live Perimeter Threat Radar
+          </div>
+          <span class="badge badge-critical" id="stat-active-threats-badge">ACTIVE MONITORING</span>
+        </div>
+        <div class="radar-container" id="radar-canvas">
+          <div class="radar-circle rc-1"></div>
+          <div class="radar-circle rc-2"></div>
+          <div class="radar-circle rc-3"></div>
+          <div class="radar-circle rc-4"></div>
+          <div class="radar-crosshair-h"></div>
+          <div class="radar-crosshair-v"></div>
+          <div class="radar-sweep"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px;border-top:1px solid var(--panel-border);padding-top:14px;">
+          <div>
+            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">ML Accuracy</div>
+            <strong style="color:var(--color-cyan);font-size:16px;">99.7% AUC</strong>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Scoring Engine</div>
+            <strong style="color:#fff;font-size:16px;">Hybrid 4-Way</strong>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;">Streaming</div>
+            <strong style="color:var(--color-green);font-size:16px;">WebSocket /ws</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core Hackathon USPs -->
+    <div style="margin-bottom:40px;">
+      <h2 style="font-size:22px;font-weight:900;letter-spacing:-0.03em;color:#fff;margin-bottom:18px;">
+        Core Architecture Innovations
+      </h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;">
+        <div class="panel">
+          <div style="font-size:24px;margin-bottom:10px;">🧠</div>
+          <h3 style="font-size:16px;color:#fff;margin-bottom:6px;">Real-Time Hybrid Detection</h3>
+          <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">
+            Combines deterministic expert rules, Scikit-learn Isolation Forest ML, behavioral baseline modeling, and threat intel into a calibrated 0-100 score.
+          </p>
+        </div>
+        <div class="panel">
+          <div style="font-size:24px;margin-bottom:10px;">👤</div>
+          <h3 style="font-size:16px;color:#fff;margin-bottom:6px;">User Behavior Fingerprinting</h3>
+          <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">
+            Establishes historical login hours, typical device fingerprints, and access patterns to compute exact deviation percentages.
+          </p>
+        </div>
+        <div class="panel">
+          <div style="font-size:24px;margin-bottom:10px;">🔍</div>
+          <h3 style="font-size:16px;color:#fff;margin-bottom:6px;">Explainable AI & Ground Truth</h3>
+          <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">
+            Provides evidence checklists grounded strictly in database telemetry. AI Security Analyst answers analyst queries deterministically.
+          </p>
+        </div>
+        <div class="panel">
+          <div style="font-size:24px;margin-bottom:10px;">⚡</div>
+          <h3 style="font-size:16px;color:#fff;margin-bottom:6px;">Attack Path Modeler & Replay</h3>
+          <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">
+            Visualizes kill-chain risk trajectories (Initial Access → Escalation → Exfiltration) and animates step-by-step incident replay.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/websocket.js"></script>
+  <script src="js/demo.js"></script>
+</body>
+</html>

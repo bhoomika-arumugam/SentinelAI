@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelAI — System Health & Engine Settings</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="topbar">
+    <div class="container nav-container">
+      <div class="brand">
+        <div class="brandmark">S</div>
+        <div>
+          SentinelAI
+          <small>System Configuration</small>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html">Overview</a>
+        <a href="dashboard.html">SOC Dashboard</a>
+        <a href="threats.html">Threat Hunting</a>
+        <a href="incidents.html">Incidents & Replay</a>
+        <a href="network.html">Network Map</a>
+        <a href="behavior.html">User Behavior</a>
+        <a href="reports.html">Reports</a>
+        <a href="settings.html" class="active">Settings</a>
+      </nav>
+      <div class="nav-actions">
+        <div id="ws-status-pill" class="status-pill">
+          <span id="ws-status-dot" class="status-dot"></span>
+          <span id="ws-status-text">SOC ONLINE</span>
+        </div>
+        <div id="nav-user-container"></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container" style="padding: 30px 0 50px;">
+    
+    <!-- System Health Status Section (Section 31) -->
+    <div class="panel" style="margin-bottom: 24px;">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span class="status-dot"></span> Infrastructure & Component Health (GET /api/health)
+        </div>
+        <button class="btn btn-sm btn-outline" onclick="loadHealthStatus()">🔄 Refresh Status</button>
+      </div>
+      <div id="health-components-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:14px;">
+        <div style="color:var(--text-muted);padding:20px;">Checking system health...</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      
+      <!-- Hybrid Risk Engine Weights (Configurable) -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">⚖️ Hybrid Detection Weights (Sum = 1.0)</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;font-size:12px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span>Rule Engine Weight:</span>
+              <strong style="color:var(--color-cyan);">35% (0.35)</strong>
+            </div>
+            <input type="range" min="0.1" max="0.7" step="0.05" value="0.35" style="width:100%;accent-color:var(--color-cyan);" disabled>
+          </div>
+
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span>ML Isolation Forest Anomaly Weight:</span>
+              <strong style="color:var(--color-cyan);">30% (0.30)</strong>
+            </div>
+            <input type="range" min="0.1" max="0.7" step="0.05" value="0.30" style="width:100%;accent-color:var(--color-cyan);" disabled>
+          </div>
+
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span>User Behavior Deviation Weight:</span>
+              <strong style="color:var(--color-yellow);">25% (0.25)</strong>
+            </div>
+            <input type="range" min="0.1" max="0.7" step="0.05" value="0.25" style="width:100%;accent-color:var(--color-yellow);" disabled>
+          </div>
+
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span>Threat Intelligence Feed Weight:</span>
+              <strong style="color:var(--color-purple);">10% (0.10)</strong>
+            </div>
+            <input type="range" min="0.05" max="0.4" step="0.05" value="0.10" style="width:100%;accent-color:var(--color-purple);" disabled>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+            * Configured via environment variables (<code>WEIGHT_RULES</code>, <code>WEIGHT_ANOMALY</code>, <code>WEIGHT_BEHAVIOR</code>, <code>WEIGHT_INTELLIGENCE</code>).
+          </div>
+        </div>
+      </div>
+
+      <!-- External API & Telemetry Settings -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">🔌 Threat Feeds & Notifications</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;font-size:12px;">
+          <div>
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">VirusTotal API Key</label>
+            <input type="password" value="••••••••••••••••••••••••••••••••" class="btn" style="width:100%;text-align:left;background:#07121f;" readonly>
+          </div>
+          <div>
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">AbuseIPDB API Key</label>
+            <input type="password" value="••••••••••••••••••••••••••••••••" class="btn" style="width:100%;text-align:left;background:#07121f;" readonly>
+          </div>
+          <div>
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">Slack Webhook URL</label>
+            <input type="text" value="https://hooks.slack.com/services/..." class="btn" style="width:100%;text-align:left;background:#07121f;" readonly>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">
+            All external API keys are safely managed server-side via <code>.env</code> with automatic graceful fallback.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/websocket.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadHealthStatus();
+    });
+
+    async function loadHealthStatus() {
+      const container = document.getElementById('health-components-grid');
+      if (!container) return;
+
+      try {
+        const health = await API.getHealth();
+        const comps = health.components || {};
+
+        container.innerHTML = Object.entries(comps).map(([k, comp]) => {
+          const isOnline = comp.status === 'ONLINE';
+          const isConfigured = comp.status !== 'NOT_CONFIGURED';
+          const badgeClass = isOnline ? 'badge-low' : (isConfigured ? 'badge-medium' : 'badge-investigating');
+
+          return `
+            <div style="background:#07121f;border:1px solid var(--panel-border);padding:14px;border-radius:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <strong style="color:#fff;font-size:13px;">${escapeHtml(comp.name)}</strong>
+                <span class="badge ${badgeClass}">${comp.status}</span>
+              </div>
+              <div style="font-size:11px;color:var(--text-secondary);line-height:1.4;">${escapeHtml(comp.details)}</div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        container.innerHTML = `<div style="color:var(--color-red);padding:20px;">Health check failed: ${err.message}</div>`;
+      }
+    }
+  </script>
+</body>
+</html>

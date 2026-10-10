@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Service (High-performance relational store)
+  db:
+    image: postgres:16-alpine
+    container_name: sentinelai_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sentinel_user
+      POSTGRES_PASSWORD: sentinel_pass
+      POSTGRES_DB: sentinel_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sentinel_user -d sentinel_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis Event Layer & Caching Service
+  redis:
+    image: redis:7-alpine
+    container_name: sentinelai_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # SentinelAI FastAPI Application & ML Engine
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sentinelai_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://sentinel_user:sentinel_pass@db:5432/sentinel_db
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET=sentinelai_super_secret_production_key_change_in_prod_2026!
+      - HOST=0.0.0.0
+      - PORT=8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  postgres_data:
+  redis_data:

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelAI — SOC Analyst Authentication</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body style="display:grid;place-items:center;min-height:100vh;padding:20px;">
+
+  <div class="panel" style="width:min(440px,100%);padding:35px 30px;">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div class="brandmark" style="margin:0 auto 14px;width:48px;height:48px;font-size:24px;">S</div>
+      <h1 style="font-size:22px;font-weight:900;color:#fff;letter-spacing:-0.03em;">SentinelAI SOC Portal</h1>
+      <p style="font-size:12px;color:var(--text-secondary);margin-top:4px;">Sign in to access real-time defense operations</p>
+    </div>
+
+    <form id="login-form">
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">Username</label>
+        <input type="text" id="username" class="btn" style="width:100%;text-align:left;background:#06101c;border-color:var(--panel-border);" required placeholder="e.g. admin">
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">Password</label>
+        <input type="password" id="password" class="btn" style="width:100%;text-align:left;background:#06101c;border-color:var(--panel-border);" required placeholder="••••••••••••">
+      </div>
+
+      <button type="submit" id="login-btn" class="btn btn-primary" style="width:100%;padding:11px;font-size:13px;margin-bottom:16px;">
+        Authenticate Session →
+      </button>
+    </form>
+
+    <!-- Demo Credentials Quick-Fill -->
+    <div style="border-top:1px solid var(--panel-border);padding-top:16px;margin-top:16px;">
+      <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px;text-align:center;">
+        Quick-Fill Hackathon Credentials
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button type="button" class="btn btn-sm btn-outline" onclick="fillCreds('admin', 'SentinelAdmin2026!')">
+          Admin (SOC Lead)
+        </button>
+        <button type="button" class="btn btn-sm btn-outline" onclick="fillCreds('analyst', 'SentinelAnalyst2026!')">
+          Security Analyst
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script>
+    function fillCreds(u, p) {
+      document.getElementById('username').value = u;
+      document.getElementById('password').value = p;
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const u = document.getElementById('username').value.trim();
+      const p = document.getElementById('password').value.trim();
+      const btn = document.getElementById('login-btn');
+
+      btn.disabled = true;
+      btn.textContent = 'Verifying Credentials...';
+
+      try {
+        const res = await API.login(u, p);
+        API.setToken(res.access_token);
+        API.setUser(res.user);
+        showToast(`Authentication successful. Welcome, ${res.user.username}!`, 'success');
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 600);
+      } catch (err) {
+        showToast(`Login failed: ${err.message}`, 'danger');
+        btn.disabled = false;
+        btn.textContent = 'Authenticate Session →';
+      }
+    });
+  </script>
+</body>
+</html>

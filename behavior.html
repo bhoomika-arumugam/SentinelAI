@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelAI — User Behavior Fingerprinting & Profiling</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="topbar">
+    <div class="container nav-container">
+      <div class="brand">
+        <div class="brandmark">S</div>
+        <div>
+          SentinelAI
+          <small>Behavioral Profiler</small>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html">Overview</a>
+        <a href="dashboard.html">SOC Dashboard</a>
+        <a href="threats.html">Threat Hunting</a>
+        <a href="incidents.html">Incidents & Replay</a>
+        <a href="network.html">Network Map</a>
+        <a href="behavior.html" class="active">User Behavior</a>
+        <a href="reports.html">Reports</a>
+        <a href="settings.html">Settings</a>
+      </nav>
+      <div class="nav-actions">
+        <div id="ws-status-pill" class="status-pill">
+          <span id="ws-status-dot" class="status-dot"></span>
+          <span id="ws-status-text">SOC ONLINE</span>
+        </div>
+        <div id="nav-user-container"></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container" style="padding: 30px 0 50px;">
+    
+    <div class="panel" style="margin-bottom: 24px; padding: 18px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+      <div>
+        <h2 style="font-size:20px;font-weight:900;color:#fff;">Identity Behavior Fingerprinting</h2>
+        <p style="font-size:12px;color:var(--text-secondary);">Calculates mathematical deviation against learned behavioral baselines (hours, devices, frequencies).</p>
+      </div>
+
+      <div style="min-width:220px;">
+        <label style="display:block;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">Select Account</label>
+        <select id="user-profile-select" class="btn" style="width:100%;background:#07121f;">
+          <option value="demo_user">demo_user (Standard Employee)</option>
+          <option value="admin">admin (SOC Administrator)</option>
+          <option value="analyst">analyst (Security Analyst)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Behavior Fingerprint Comparative View (Loaded by behavior.js) -->
+    <div id="behavior-content-container"></div>
+
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/websocket.js"></script>
+  <script src="js/behavior.js"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelAI — Interactive SOC Network Topology</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="topbar">
+    <div class="container nav-container">
+      <div class="brand">
+        <div class="brandmark">S</div>
+        <div>
+          SentinelAI
+          <small>Topology Monitor</small>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html">Overview</a>
+        <a href="dashboard.html">SOC Dashboard</a>
+        <a href="threats.html">Threat Hunting</a>
+        <a href="incidents.html">Incidents & Replay</a>
+        <a href="network.html" class="active">Network Map</a>
+        <a href="behavior.html">User Behavior</a>
+        <a href="reports.html">Reports</a>
+        <a href="settings.html">Settings</a>
+      </nav>
+      <div class="nav-actions">
+        <div id="ws-status-pill" class="status-pill">
+          <span id="ws-status-dot" class="status-dot"></span>
+          <span id="ws-status-text">SOC ONLINE</span>
+        </div>
+        <div id="nav-user-container"></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container" style="padding: 24px 0 40px;">
+    
+    <div class="panel" style="margin-bottom: 20px; padding: 14px 20px; display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <h2 style="font-size:18px;font-weight:900;color:#fff;">Live Network Perimeter & Internal Mesh</h2>
+        <p style="font-size:12px;color:var(--text-secondary);">Interactive telemetry graph updated via live event streams. Tap any node for details.</p>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <span class="badge badge-critical">Red = Hostile Indicator</span>
+        <span class="badge badge-low">Blue = Internal Node</span>
+      </div>
+    </div>
+
+    <!-- Network Graph Container & Node Details Sidebar -->
+    <div style="display:grid;grid-template-columns:3fr 1fr;gap:20px;">
+      
+      <div class="panel" style="padding:0;min-height:580px;position:relative;">
+        <div id="cy-network-container" style="width:100%;height:580px;"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Node Telemetry Inspector</div>
+        </div>
+        <div id="network-node-details">
+          <div style="color:var(--text-muted);font-size:12px;text-align:center;padding:40px 10px;">
+            Click on any network node to inspect live traffic and threat associations.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/websocket.js"></script>
+  <script src="js/network.js"></script>
+</body>
+</html>

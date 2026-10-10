@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelAI — Incident Response & Threat Replay Center</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="topbar">
+    <div class="container nav-container">
+      <div class="brand">
+        <div class="brandmark">S</div>
+        <div>
+          SentinelAI
+          <small>Incident Operations</small>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html">Overview</a>
+        <a href="dashboard.html">SOC Dashboard</a>
+        <a href="threats.html">Threat Hunting</a>
+        <a href="incidents.html" class="active">Incidents & Replay</a>
+        <a href="network.html">Network Map</a>
+        <a href="behavior.html">User Behavior</a>
+        <a href="reports.html">Reports</a>
+        <a href="settings.html">Settings</a>
+      </nav>
+      <div class="nav-actions">
+        <div id="ws-status-pill" class="status-pill">
+          <span id="ws-status-dot" class="status-dot"></span>
+          <span id="ws-status-text">SOC ONLINE</span>
+        </div>
+        <div id="nav-user-container"></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container" style="padding: 30px 0 50px;">
+    
+    <div class="panel" style="margin-bottom: 24px; padding: 18px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+      <div>
+        <h2 style="font-size:20px;font-weight:900;color:#fff;">Incident Response Queue</h2>
+        <p style="font-size:12px;color:var(--text-secondary);margin-top:2px;">Track triage status, execute simulated containment, and replay timelines.</p>
+      </div>
+
+      <div style="min-width:200px;">
+        <select id="filter-status" class="btn" style="background:#07121f;width:100%;">
+          <option value="">All Incident States</option>
+          <option value="NEW">New</option>
+          <option value="INVESTIGATING">Investigating</option>
+          <option value="CONTAINED">Contained</option>
+          <option value="RESOLVED">Resolved</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Incidents Table -->
+    <div class="panel">
+      <div class="table-responsive">
+        <table class="soc-table">
+          <thead>
+            <tr>
+              <th>Incident</th>
+              <th>Severity</th>
+              <th>Incident Title</th>
+              <th>Status</th>
+              <th>Attacking IP</th>
+              <th>Timestamp</th>
+              <th style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="incidents-tbody">
+            <tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-muted);">Loading incidents from database...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Incident Investigation & Response Modal -->
+  <div id="incident-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div style="font-size:12px;font-weight:800;letter-spacing:0.1em;color:var(--color-cyan);text-transform:uppercase;">
+          Incident Triage & Response Center
+        </div>
+        <button class="modal-close" onclick="closeIncidentModal()">✕</button>
+      </div>
+      <div id="incident-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Threat Replay Modal (Section 17) -->
+  <div id="replay-modal" class="modal-backdrop">
+    <div class="modal-card" style="width:min(680px,100%);">
+      <div class="modal-header">
+        <div style="font-size:12px;font-weight:800;letter-spacing:0.1em;color:var(--color-cyan);text-transform:uppercase;">
+          ▶ Animated Incident Threat Replay
+        </div>
+        <button class="modal-close" onclick="closeReplayModal()">✕</button>
+      </div>
+      <div id="replay-frames-container"></div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/websocket.js"></script>
+  <script src="js/incidents.js"></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelAI — Security Analytics & Executive Reports</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="topbar">
+    <div class="container nav-container">
+      <div class="brand">
+        <div class="brandmark">S</div>
+        <div>
+          SentinelAI
+          <small>Analytics & Reports</small>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html">Overview</a>
+        <a href="dashboard.html">SOC Dashboard</a>
+        <a href="threats.html">Threat Hunting</a>
+        <a href="incidents.html">Incidents & Replay</a>
+        <a href="network.html">Network Map</a>
+        <a href="behavior.html">User Behavior</a>
+        <a href="reports.html" class="active">Reports</a>
+        <a href="settings.html">Settings</a>
+      </nav>
+      <div class="nav-actions">
+        <div id="ws-status-pill" class="status-pill">
+          <span id="ws-status-dot" class="status-dot"></span>
+          <span id="ws-status-text">SOC ONLINE</span>
+        </div>
+        <div id="nav-user-container"></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container" style="padding: 30px 0 50px;">
+    
+    <div class="panel" style="margin-bottom: 24px; padding: 18px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+      <div>
+        <h2 style="font-size:20px;font-weight:900;color:#fff;">Executive SOC Telemetry Report</h2>
+        <p style="font-size:12px;color:var(--text-secondary);">Comprehensive detection metrics, mitigation velocity, and forensic log exports.</p>
+      </div>
+
+      <div>
+        <button class="btn btn-primary" onclick="exportCsvReport()">
+          📥 Export Forensic CSV Report
+        </button>
+      </div>
+    </div>
+
+    <!-- Executive KPI Grid -->
+    <div class="stats-grid" style="grid-template-columns:repeat(6, 1fr); margin-bottom:24px;">
+      <div class="stat-card">
+        <div class="stat-label">Total Events</div>
+        <div class="stat-value" id="rep-total-events">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Threats</div>
+        <div class="stat-value" id="rep-total-threats">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Incidents</div>
+        <div class="stat-value" id="rep-total-incidents">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Resolved</div>
+        <div class="stat-value" id="rep-resolved-incidents">--</div>
+      </div>
+      <div class="stat-card health">
+        <div class="stat-label">Containment Rate</div>
+        <div class="stat-value" id="rep-containment-rate">--%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg MTTR</div>
+        <div class="stat-value" id="rep-mttr">-- min</div>
+      </div>
+    </div>
+
+    <!-- Charts & Tables Grid -->
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
+      
+      <!-- Category Chart -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">📊 Threats by Signature & Category</div>
+        </div>
+        <div style="height:280px;position:relative;">
+          <canvas id="reportCategoryChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Top Hostile Indicators Table -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">🚨 Top Hostile IP Indicators</div>
+        </div>
+        <div class="table-responsive">
+          <table class="soc-table">
+            <thead>
+              <tr>
+                <th>Source IP</th>
+                <th>Volume</th>
+                <th>Avg Risk</th>
+              </tr>
+            </thead>
+            <tbody id="top-indicators-tbody">
+              <tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:20px;">Loading indicator metrics...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/websocket.js"></script>
+  <script src="js/reports.js"></script>
+</body>
+</html>

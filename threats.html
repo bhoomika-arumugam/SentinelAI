@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelAI — Threat Hunting & Investigation</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="topbar">
+    <div class="container nav-container">
+      <div class="brand">
+        <div class="brandmark">S</div>
+        <div>
+          SentinelAI
+          <small>Threat Hunting Center</small>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html">Overview</a>
+        <a href="dashboard.html">SOC Dashboard</a>
+        <a href="threats.html" class="active">Threat Hunting</a>
+        <a href="incidents.html">Incidents & Replay</a>
+        <a href="network.html">Network Map</a>
+        <a href="behavior.html">User Behavior</a>
+        <a href="reports.html">Reports</a>
+        <a href="settings.html">Settings</a>
+      </nav>
+      <div class="nav-actions">
+        <div id="ws-status-pill" class="status-pill">
+          <span id="ws-status-dot" class="status-dot"></span>
+          <span id="ws-status-text">SOC ONLINE</span>
+        </div>
+        <div id="nav-user-container"></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container" style="padding: 30px 0 50px;">
+    
+    <!-- Filter Control Bar -->
+    <div class="panel" style="margin-bottom: 24px; padding: 18px 20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div style="flex:1; min-width:240px;">
+          <label style="display:block;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">Search by Threat, IP or Identity</label>
+          <input type="text" id="filter-search" class="btn" style="width:100%;text-align:left;background:#07121f;" placeholder="e.g. Brute Force, 203.0.113.88, demo_user...">
+        </div>
+
+        <div style="min-width:160px;">
+          <label style="display:block;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">Severity</label>
+          <select id="filter-severity" class="btn" style="width:100%;background:#07121f;">
+            <option value="">All Severities</option>
+            <option value="CRITICAL">Critical</option>
+            <option value="HIGH">High</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="LOW">Low</option>
+          </select>
+        </div>
+
+        <div style="min-width:200px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+            <label style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Min Risk Score</label>
+            <span id="filter-risk-val" style="font-size:11px;font-weight:800;color:var(--color-cyan);">0+</span>
+          </div>
+          <input type="range" id="filter-risk" min="0" max="90" step="10" value="0" style="width:100%;accent-color:var(--color-cyan);">
+        </div>
+      </div>
+    </div>
+
+    <!-- Threat Cards Grid -->
+    <div id="threats-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:18px;"></div>
+
+  </div>
+
+  <!-- Reusable Threat Detail Modal -->
+  <div id="threat-detail-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div style="font-size:12px;font-weight:800;letter-spacing:0.1em;color:var(--color-cyan);text-transform:uppercase;">
+          Threat Ground Truth & Attack Path Analysis
+        </div>
+        <button class="modal-close" onclick="closeThreatModal()">✕</button>
+      </div>
+      <div id="threat-modal-body"></div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/websocket.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/threats.js"></script>
+</body>
+</html>
